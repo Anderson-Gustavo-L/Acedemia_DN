@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0807">
+    <meta name="description" content="DN Maromba Fitness — academia no bairro Magano, Garanhuns/PE. Musculação, treinamento funcional e aulas em grupo. Planos a partir de R$ 50/mês.">
+
+    <!-- Open Graph / compartilhamento em redes sociais -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="DN Maromba Fitness">
+    <meta property="og:title" content="DN Maromba Fitness | Seu treino começa aqui">
+    <meta property="og:description" content="Musculação, treinamento funcional e aulas em grupo no Magano, Garanhuns/PE. Planos a partir de R$ 50/mês.">
+    <meta property="og:image" content="og-image.jpg">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <title>DN Maromba Fitness | Seu treino começa aqui</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #0A0807;
+            --surface: #12100E;
+            --surface-2: #191614;
+            --text: #F2F0EA;
+            --muted: #A7A39C;
+            --line: rgba(242, 240, 234, 0.14);
+            --green: #80FF00;
+            --green-hover: #98FF33;
+            --display: 'Montserrat', sans-serif;
+            --body: 'Inter', sans-serif;
+            --container: 1180px;
+            --header: 82px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; background: var(--bg); }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        body.modal-open,
+        body.menu-open { overflow: hidden; }
+
+        a { color: inherit; text-decoration: none; }
+        img { display: block; max-width: 100%; }
+        button { font: inherit; }
+
+        .container {
+            width: min(var(--container), 90%);
+            margin-inline: auto;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--green);
+            font: 700 0.78rem/1 var(--display);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .section {
+            padding: 7rem 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .section-heading { max-width: 760px; }
+
+        .section-heading h2 {
+            font: 900 clamp(2.35rem, 5vw, 4.75rem)/0.95 var(--display);
+            letter-spacing: -0.045em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .section-heading p {
+            max-width: 620px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            min-height: 50px;
+            padding: 0 1.35rem;
+            font: 900 0.78rem/1 var(--display);
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            transition: transform .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
+        }
+
+        .btn-primary { background: var(--green); color: var(--bg); border: 1px solid var(--green); }
+        .btn-primary:hover { background: var(--green-hover); transform: translateY(-2px); }
+
+        .btn-outline { background: transparent; color: var(--green); border: 1px solid var(--green); }
+        .btn-outline:hover { background: var(--green); color: var(--bg); }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            inset: 0 0 auto;
+            z-index: 100;
+            height: var(--header);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid transparent;
+            transition: background-color .25s ease, border-color .25s ease;
+        }
+        header.scrolled {
+            background: rgba(10, 8, 7, .94);
+            backdrop-filter: blur(10px);
+            border-color: var(--line);
+        }
+        .nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+        .logo img { width: auto; height: 100px; }
+        .nav-links { display: flex; align-items: center; gap: 1.55rem; margin-left: auto; margin-right: 1.25rem; }
+        .nav-links a {
+            color: var(--text);
+            font: 700 .74rem/1 var(--display);
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            transition: color .2s ease;
+        }
+        .nav-links a:hover, .nav-links a:focus-visible { color: var(--green); }
+        .nav-menu-toggle {
+            display: none; width: 42px; height: 42px; color: var(--text);
+            border: 1px solid var(--line); background: transparent;
+        }
+        .nav-menu-toggle span, .nav-menu-toggle::before, .nav-menu-toggle::after {
+            display: block; width: 18px; height: 2px; margin: 0 auto;
+            background: currentColor; content: ''; transition: transform .2s ease;
+        }
+        .nav-menu-toggle span { margin-block: 5px; }
+        .nav-menu-toggle.is-open::before { transform: translateY(7px) rotate(45deg); }
+        .nav-menu-toggle.is-open::after { transform: translateY(-7px) rotate(-45deg); }
+        .nav-menu-toggle.is-open span { opacity: 0; }
+
+        .mobile-nav {
+            position: fixed; top: var(--header); left: 0; right: 0;
+            background: rgba(10,8,7,.98); border-bottom: 1px solid var(--line);
+            opacity: 0; visibility: hidden; transform: translateY(-8px);
+            transition: opacity .2s ease, visibility .2s ease, transform .2s ease;
+        }
+        .mobile-nav.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .mobile-nav a {
+            display: block; padding: 1rem 5%; border-bottom: 1px solid var(--line);
+            font: 800 .9rem/1 var(--display); text-transform: uppercase;
+        }
+        .mobile-nav a:hover { color: var(--green); }
+
+        /* HERO */
+        .hero { position: relative; min-height: 100svh; display: grid; place-items: center; overflow: hidden; }
+        .hero-media, .hero-overlay { position: absolute; inset: 0; }
+        .hero-media { z-index: -2; }
+        .hero-media img {
+            width: 100%; height: 100%; object-fit: cover; object-position: center;
+            filter: saturate(.9) contrast(1.04); transform: scale(1.04);
+        }
+        .hero-overlay {
+            z-index: -1;
+            background:
+                linear-gradient(180deg, rgba(10,8,7,.38) 0%, rgba(10,8,7,.55) 48%, rgba(10,8,7,.92) 100%),
+                linear-gradient(90deg, rgba(10,8,7,.15), rgba(10,8,7,.12));
+        }
+        .hero-content { padding-top: var(--header); padding-bottom: 4rem; text-align: center; }
+        .hero-logo { width: min(320px, 68vw); height: auto; margin: 0 auto 1.65rem; filter: drop-shadow(0 10px 30px rgba(0,0,0,.4)); }
+        .hero-title {
+            margin-bottom: 1rem; font: 900 clamp(2.8rem, 7vw, 6.5rem)/.92 var(--display);
+            letter-spacing: -.055em; text-transform: uppercase; text-shadow: 0 8px 30px rgba(0,0,0,.35);
+        }
+        .hero-title span { color: var(--green); }
+        .hero-subtitle { max-width: 560px; margin: 0 auto 1.8rem; color: #ddd8d0; line-height: 1.65; }
+        .hero-actions { display: flex; justify-content: center; gap: .8rem; flex-wrap: wrap; }
+
+        /* HORÁRIOS */
+        .schedule-wrap { margin-top: -3.25rem; position: relative; z-index: 2; }
+        .schedule-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; border: 1px solid var(--line); background: var(--surface); }
+        .schedule-card { padding: 1.65rem 1.75rem; border-right: 1px solid var(--line); }
+        .schedule-card:last-child { border-right: 0; }
+        .schedule-card small {
+            display: block; margin-bottom: .45rem; color: var(--green);
+            font: 800 .72rem/1 var(--display); letter-spacing: .1em; text-transform: uppercase;
+        }
+        .schedule-card strong { font-size: 1.12rem; }
+
+        .schedule-address {
+            margin-top: 1.1rem;
+            text-align: center;
+            color: rgba(242,240,234,.75);
+            font-size: .78rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        /* SOBRE */
+        .about-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 4.5rem; align-items: center; }
+        .about-copy p { max-width: 560px; color: var(--muted); line-height: 1.75; }
+        .about-image { aspect-ratio: 1.2 / 1; overflow: hidden; border: 1px solid var(--line); }
+        .about-image img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* MODALIDADES */
+        .modalidades-head { display: flex; justify-content: space-between; gap: 2rem; align-items: end; }
+        .modalidades-head .section-heading p { max-width: 500px; }
+        .mod-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 230px; gap: 1rem; margin-top: 3rem; }
+        .mod-card {
+            position: relative; overflow: hidden; min-width: 0; border: 1px solid var(--line);
+            background: var(--surface); color: var(--text); text-align: left; isolation: isolate;
+            transition: border-color .25s ease, transform .25s ease;
+        }
+        .mod-card:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+        .mod-card:nth-child(4) { grid-column: span 2; }
+        .mod-card:hover, .mod-card:focus-visible { border-color: var(--green); transform: translateY(-3px); }
+        .mod-card::after {
+            content: ''; position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(180deg, rgba(10,8,7,.04) 18%, rgba(10,8,7,.82) 100%);
+        }
+        .mod-card img {
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            filter: saturate(.82) contrast(1.06); transition: transform .45s ease, filter .45s ease;
+            background: var(--surface-2);
+        }
+        .mod-card:hover img, .mod-card:focus-visible img { transform: scale(1.045); filter: saturate(.98) contrast(1.05); }
+        .mod-content {
+            position: absolute; left: 1.25rem; right: 1.25rem; bottom: 1.15rem; z-index: 2;
+            display: flex; justify-content: space-between; align-items: end; gap: 1rem;
+        }
+        .mod-content h3 { font: 900 clamp(1.4rem, 3vw, 2.35rem)/.95 var(--display); text-transform: uppercase; }
+        .mod-content span { color: var(--green); font-size: 1.25rem; }
+
+        /* PLANOS */
+        .plans-list { margin-top: 2.8rem; border-top: 1px solid var(--line); }
+        .plan {
+            display: grid; grid-template-columns: 1.1fr .55fr 1fr auto; align-items: center;
+            gap: 1rem; padding: 1.5rem 0; border-bottom: 1px solid var(--line);
+        }
+        .plan-name { font: 900 1.3rem/1 var(--display); text-transform: uppercase; }
+        .plan-price { font: 900 1.55rem/1 var(--display); }
+        .plan-note { color: var(--muted); font-size: .9rem; }
+        .plan.featured { background: linear-gradient(90deg, transparent, rgba(128,255,0,.05), transparent); }
+        .plan.featured .plan-name, .plan.featured .plan-price { color: var(--green); }
+        .visit-banner {
+            margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;
+            gap: 2rem; padding: 1.5rem 1.7rem; background: var(--surface-2); border: 1px solid var(--line);
+        }
+        .visit-banner strong { display: block; margin-bottom: .4rem; font: 900 1rem var(--display); text-transform: uppercase; }
+        .visit-banner p { color: var(--muted); font-size: .9rem; }
+
+        /* CONTATO */
+        .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 2rem; align-items: stretch; }
+        .contact-copy { padding: 2.2rem; background: var(--surface); border: 1px solid var(--line); }
+        .contact-copy h2 { font: 900 clamp(2.4rem, 5vw, 4.8rem)/.93 var(--display); text-transform: uppercase; letter-spacing: -.045em; margin-bottom: 1rem; }
+        .address { color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+        .contact-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+        .contact-photo { margin-top: 1.75rem; overflow: hidden; border: 1px solid var(--line); }
+        .contact-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
+        .map { min-height: 100%; border: 1px solid var(--line); background: var(--surface); }
+        .map iframe { width: 100%; height: 100%; min-height: 520px; border: 0; filter: grayscale(.55) contrast(1.05); }
+
+        /* FOOTER */
+        footer { padding: 3.5rem 0 2rem; border-top: 1px solid var(--line); background: #050403; }
+        .footer-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 2rem; align-items: start; }
+        .footer-logo img { width: auto; height: 100px; margin-bottom: 1rem; }
+        .footer-copy { max-width: 370px; color: var(--muted); line-height: 1.65; font-size: .9rem; }
+        .footer-links { display: grid; gap: .65rem; }
+        .footer-links a { color: var(--muted); font-size: .88rem; transition: color .2s ease; }
+        .footer-links a:hover { color: var(--green); }
+        .footer-contact { color: var(--muted); line-height: 1.65; font-size: .88rem; }
+        .copyright { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); color: #716d66; font-size: .75rem; display: flex; justify-content: space-between; gap: 1rem; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1rem;
+            background: rgba(0,0,0,.82); backdrop-filter: blur(5px);
+            opacity: 0; visibility: hidden; transition: opacity .22s ease, visibility .22s ease;
+        }
+        .modal-overlay.is-active { opacity: 1; visibility: visible; }
+        .modal {
+            position: relative; width: min(920px, 100%); max-height: 90vh; overflow: auto;
+            display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); border: 1px solid var(--line);
+            transform: translateY(12px); transition: transform .22s ease;
+        }
+        .modal-overlay.is-active .modal { transform: translateY(0); }
+        .modal-media { min-height: 470px; background: var(--surface-2); }
+        .modal-media img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-body { padding: 3rem 2.5rem; }
+        .modal-body h2 { margin-bottom: 1rem; color: var(--green); font: 900 clamp(2.2rem, 5vw, 4rem)/.95 var(--display); text-transform: uppercase; }
+        .modal-body p { color: var(--muted); line-height: 1.7; }
+        .modal-detail { margin-top: 1.7rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+        .modal-detail strong { display: block; margin-bottom: .45rem; font: 800 .75rem/1 var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
+        .modal-close { position: absolute; top: .65rem; right: .75rem; z-index: 2; width: 40px; height: 40px; color: var(--text); border: 1px solid var(--line); background: rgba(10,8,7,.65); font-size: 1.8rem; line-height: 1; }
+        .modal-close:hover { color: var(--green); border-color: var(--green); }
+
+        /* HERO ENTRANCE */
+        .hero-enter { opacity: 0; transform: translateY(18px); }
+        .hero-media img { opacity: 0; }
+
+        /* MOBILE */
+        @media (max-width: 960px) {
+            .nav-links, .desktop-cta { display: none; }
+            .nav-menu-toggle { display: block; }
+            .schedule-grid { grid-template-columns: 1fr; }
+            .schedule-card { border-right: 0; border-bottom: 1px solid var(--line); }
+            .schedule-card:last-child { border-bottom: 0; }
+            .about-grid, .contact-grid { grid-template-columns: 1fr; }
+            .mod-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 220px; }
+            .mod-card:nth-child(1), .mod-card:nth-child(4) { grid-column: span 2; }
+            .plan { grid-template-columns: 1fr auto; }
+            .plan-note { grid-column: 1 / -1; }
+            .visit-banner { align-items: flex-start; flex-direction: column; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 650px) {
+            :root { --header: 74px; }
+            .section { padding: 5rem 0; }
+            .logo img { height: 38px; }
+            .hero { min-height: 90svh; }
+            .hero-content { padding-top: 5rem; }
+            .hero-logo { width: min(250px, 68vw); }
+            .hero-title { font-size: clamp(2.6rem, 13vw, 4.3rem); }
+            .hero-subtitle { font-size: .93rem; }
+            .hero-location { left: 5%; right: 5%; bottom: 1rem; font-size: .62rem; }
+            .schedule-wrap { margin-top: 1rem; }
+            .mod-grid { grid-template-columns: 1fr; grid-auto-rows: 235px; }
+            .mod-card:nth-child(1), .mod-card:nth-child(4) { grid-column: auto; grid-row: auto; }
+            .plan { grid-template-columns: 1fr; padding: 1.35rem 0; }
+            .plan-price { font-size: 1.4rem; }
+            .plan-note { grid-column: auto; }
+            .contact-actions { flex-direction: column; align-items: stretch; }
+            .contact-actions .btn { width: 100%; }
+            .map iframe { min-height: 360px; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .copyright { flex-direction: column; }
+            .modal { grid-template-columns: 1fr; max-height: 94vh; }
+            .modal-media { min-height: 220px; max-height: 260px; }
+            .modal-body { padding: 2rem 1.35rem 1.5rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+        }
+
+        :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+        /* Placeholder visível caso alguma imagem de modalidade ainda não exista */
+        .mod-card img.img-fallback,
+        .modal-media img.img-fallback { object-fit: contain; padding: 2rem; opacity: .35; }
+    </style>
+    <link rel="icon" type="image/png" href="logo-dn-maromba.png">
+</head>
+<body>
+<header id="site-header">
+    <div class="container nav">
+        <a class="logo" href="#inicio" aria-label="DN Maromba - início">
+            <img src="logo-dn-maromba.png" alt="DN Maromba">
+        </a>
+        <nav class="nav-links" aria-label="Navegação principal">
+            <a href="#horarios">Horários</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#modalidades">Modalidades</a>
+            <a href="#planos">Planos</a>
+            <a href="#contato">Contato</a>
+        </nav>
+        <a class="btn btn-primary desktop-cta js-whatsapp" href="#" target="_blank" rel="noopener noreferrer" data-wa-msg="Olá! Quero saber mais sobre a matrícula na DN Maromba.">Matrícula</a>
+        <button class="nav-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav">
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Navegação mobile">
+    <a href="#horarios">Horários</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#modalidades">Modalidades</a>
+    <a href="#planos">Planos</a>
+    <a href="#contato">Contato</a>
+    <a href="#" class="js-whatsapp" target="_blank" rel="noopener noreferrer" data-wa-msg="Olá! Quero saber mais sobre a matrícula na DN Maromba.">Falar no WhatsApp</a>
+</nav>
+
+<main>
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-media">
+            <picture>
+                <img id="hero-image" src="casal-treino.png" alt="Fachada da DN Maromba à noite" fetchpriority="high">
+            </picture>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <img class="hero-logo hero-enter" src="logo-dn-maromba.png" alt="DN Maromba">
+            <h1 class="hero-title hero-enter" id="hero-title">Treine <span>de verdade.</span></h1>
+            <p class="hero-subtitle hero-enter">Musculação, aulas em grupo e um espaço para manter a sua rotina de treino em Garanhuns.</p>
+            <div class="hero-actions hero-enter">
+                <a class="btn btn-primary js-whatsapp" href="#" target="_blank" rel="noopener noreferrer" data-wa-msg="Olá! Quero saber mais sobre a DN Maromba.">Chamar no WhatsApp</a>
+                <a class="btn btn-outline" href="#horarios">Ver horários</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="schedule-wrap" id="horarios">
+        <div class="container">
+            <div class="schedule-grid">
+                <div class="schedule-card"><small>Segunda a sexta</small><strong>05h às 22h</strong></div>
+                <div class="schedule-card"><small>Sábados</small><strong>10h às 15h</strong></div>
+                <div class="schedule-card"><small>Domingos e feriados</small><strong>09h às 12h</strong></div>
+            </div>
+            <p class="schedule-address">Av. Santa Terezinha, 780 • Magano • Garanhuns/PE</p>
+        </div>
+    </div>
+
+    <section class="section" id="sobre">
+        <div class="container about-grid">
+            <div class="about-copy">
+                <span class="eyebrow">Sobre a academia</span>
+                <h2 class="section-heading">Um espaço para treinar com constância.</h2>
+                <p>A DN Maromba reúne musculação, treinamento funcional e aulas em grupo em um espaço pensado para quem quer encaixar o treino na rotina. Aqui, o foco é simples: chegar, treinar e evoluir.</p>
+            </div>
+            <div class="about-image">
+                <picture>
+                    <img src="de_verdade.jpg" alt="Pessoas treinando na DN Maromba" loading="lazy" decoding="async">
+                </picture>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="modalidades">
+        <div class="container">
+            <div class="modalidades-head">
+                <div class="section-heading">
+                    <span class="eyebrow">Treinamento</span>
+                    <h2>Escolha seu treino.</h2>
+                    <p>Cada modalidade tem uma proposta diferente. Clique em uma delas para ver horários e informações da aula.</p>
+                </div>
+            </div>
+
+            <div class="mod-grid" id="mod-grid"></div>
+        </div>
+    </section>
+
+    <section class="section" id="planos">
+        <div class="container">
+            <div class="section-heading">
+                <span class="eyebrow">Investimento</span>
+                <h2>Planos sem complicação.</h2>
+                <p>Escolha o período que melhor encaixa na sua rotina e fale com a academia para confirmar disponibilidade e condições.</p>
+            </div>
+
+            <div class="plans-list" id="plans-list"></div>
+
+            <div class="visit-banner">
+                <div>
+                    <strong>Primeira visita</strong>
+                    <p>Quer conhecer a estrutura antes de decidir? Fale com a academia e confirme a disponibilidade de treino experimental.</p>
+                </div>
+                <a class="btn btn-outline js-whatsapp" href="#" target="_blank" rel="noopener noreferrer" data-wa-msg="Olá! Gostaria de agendar uma visita ou treino experimental na DN Maromba.">Falar com a academia</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contato">
+        <div class="container contact-grid">
+            <div class="contact-copy">
+                <span class="eyebrow">Localização</span>
+                <h2>Seu treino te espera aqui.</h2>
+                <p class="address">Av. Santa Terezinha, 780<br>Magano — Garanhuns/PE</p>
+                <div class="contact-actions">
+                    <a class="btn btn-primary js-whatsapp" href="#" target="_blank" rel="noopener noreferrer" data-wa-msg="Olá! Vim pelo site da DN Maromba.">WhatsApp</a>
+                    <a class="btn btn-outline" href="https://www.google.com/maps/search/?api=1&query=Av.+Santa+Terezinha%2C+780%2C+Magano%2C+Garanhuns+-+PE" target="_blank" rel="noopener noreferrer">Traçar rota</a>
+                </div>
+                <div class="contact-photo">
+                    <img src="frente.webp" alt="Fachada da DN Maromba à noite" loading="lazy" decoding="async">
+                </div>
+            </div>
+            <div class="map" aria-label="Mapa da localização da DN Maromba">
+                <iframe
+                    title="Mapa da DN Maromba"
+                    src="https://www.google.com/maps?q=Av.+Santa+Terezinha,+780,+Magano,+Garanhuns+-+PE&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <a class="footer-logo" href="#inicio" aria-label="DN Maromba - início"><img src="logo-dn-maromba.png" alt="DN Maromba"></a>
+                <p class="footer-copy">Academia no Magano, em Garanhuns/PE, com musculação, treinamento funcional e aulas em grupo.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#horarios">Horários</a>
+                <a href="#sobre">Sobre</a>
+                <a href="#modalidades">Modalidades</a>
+                <a href="#planos">Planos</a>
+                <a href="#contato">Contato</a>
+            </div>
+            <div class="footer-contact">
+                <p>Av. Santa Terezinha, 780</p>
+                <p>Magano — Garanhuns/PE</p>
+                <br>
+                <p>WhatsApp: <a href="#" class="js-whatsapp" target="_blank" rel="noopener noreferrer" data-wa-msg="Olá! Vim pelo site da DN Maromba.">fale com a academia</a></p>
+            </div>
+        </div>
+        <div class="copyright">
+            <span>© DN Maromba Fitness</span>
+            <span>Treine de verdade.</span>
+        </div>
+    </div>
+</footer>
+
+<div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
+        <button class="modal-close" id="modal-close" type="button" aria-label="Fechar janela">×</button>
+        <div class="modal-media"><img id="modal-img" src="" alt=""></div>
+        <div class="modal-body">
+            <span class="eyebrow">Modalidade</span>
+            <h2 id="modal-title">Modalidade</h2>
+            <p id="modal-desc"></p>
+            <div class="modal-detail"><strong>Horários</strong><p id="modal-time"></p></div>
+            <div class="modal-detail"><strong>Professor</strong><p id="modal-prof"></p></div>
+            <div style="margin-top:1.8rem;"><a id="modal-cta" class="btn btn-primary js-whatsapp" href="#" target="_blank" rel="noopener noreferrer">Tenho interesse</a></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* ============================================================
+       CONFIGURAÇÃO CENTRAL
+       Edite só aqui: número de WhatsApp, imagem de fallback e
+       os dados de cada modalidade. O resto do site lê daqui —
+       nada fica duplicado entre HTML e JS.
+       ============================================================ */
+    const WHATSAPP_NUMBER = '5587999999999'; // formato DDI+DDD+número, sem espaços ou símbolos
+    const FALLBACK_IMG = 'https://images.pexels.com/photos/6455806/pexels-photo-6455806.jpeg?auto=compress&cs=tinysrgb&w=1200'; // usada se uma imagem local não carregar
+
+    const modalidades = {
+        musculacao: {
+            titulo: 'Musculação',
+            desc: 'Equipamentos modernos e área de pesos livres. Evolução com acompanhamento focado nos seus resultados.',
+            hora: 'Aberto de segunda a sexta (05h–22h), sábado (10h–15h) e domingo/feriados (09h–12h).',
+            prof: 'Acompanhamento profissional contínuo na sala.',
+            img: 'https://images.pexels.com/photos/4720570/pexels-photo-4720570.jpeg',
+            destaque: true
+        },
+        funcional: {
+            titulo: 'Funcional',
+            desc: 'Aulas focadas em mobilidade, agilidade e condicionamento físico através de circuitos.',
+            hora: 'Quarta-feira às 16h | Sexta-feira às 19h',
+            prof: 'Prof. Leônidas',
+            img: 'https://images.pexels.com/photos/6455806/pexels-photo-6455806.jpeg?auto=compress&cs=tinysrgb&w=1200'
+        },
+        danca: {
+            titulo: 'Dança',
+            desc: 'Uma aula dinâmica para treinar coordenação, ritmo e condicionamento em grupo.',
+            hora: 'Terça-feira às 19h | Quinta-feira às 19h',
+            prof: 'Prof. Fabrício',
+            img: 'https://images.pexels.com/photos/4376663/pexels-photo-4376663.jpeg'
+        },
+        jump: {
+            titulo: 'Jump',
+            desc: 'Treino cardiovascular em mini-trampolim, com ritmo e intensidade para uma aula dinâmica.',
+            hora: 'Terça-feira às 08h | Quinta-feira às 15h50',
+            prof: 'Prof. Fabrício',
+            img: 'https://images.pexels.com/photos/6571935/pexels-photo-6571935.jpeg',
+            destaque: true /* segundo card em destaque (span 2) para manter o bento grid */
+        },
+        step: {
+            titulo: 'Step',
+            desc: 'Treino ritmado com plataforma, trabalhando resistência cardiovascular e coordenação.',
+            hora: 'Quinta-feira às 08h',
+            prof: 'Prof. Fabrício',
+            img: 'https://images.pexels.com/photos/6285214/pexels-photo-6285214.jpeg'
+        },
+        karate: {
+            titulo: 'Karatê',
+            desc: 'Treino de técnica, disciplina, força e desenvolvimento corporal através da arte marcial.',
+            hora: 'Sábado, das 09h às 10h',
+            prof: 'Prof. Leônidas',
+            img: 'https://images.pexels.com/photos/7045593/pexels-photo-7045593.jpeg'
+        }
+    };
+
+    const planos = [
+        { nome: 'Mensal', preco: 'R$ 65/mês', nota: 'Acesso às modalidades e acompanhamento de instrutores.', destaque: false },
+        { nome: 'Trimestral', preco: 'R$ 55/mês', nota: 'Total de R$ 165,00. Consulte a academia para confirmar condições.', destaque: true },
+        { nome: 'Semestral', preco: 'R$ 50/mês', nota: 'Total de R$ 300,00. Consulte a academia para confirmar condições.', destaque: false }
+    ];
+
+    /* ============================================================
+       WHATSAPP — popula todos os links .js-whatsapp a partir
+       do número acima e, quando presente, do data-wa-msg.
+       ============================================================ */
+    function buildWhatsappUrl(message) {
+        const base = `https://wa.me/${WHATSAPP_NUMBER}`;
+        return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+    }
+
+    document.querySelectorAll('.js-whatsapp').forEach(link => {
+        link.href = buildWhatsappUrl(link.dataset.waMsg);
+    });
+
+    /* ============================================================
+       RENDERIZAÇÃO DE MODALIDADES E PLANOS A PARTIR DOS DADOS
+       ============================================================ */
+    const modGrid = document.getElementById('mod-grid');
+    Object.entries(modalidades).forEach(([key, data]) => {
+        const btn = document.createElement('button');
+        btn.className = 'mod-card';
+        btn.type = 'button';
+        btn.dataset.mod = key;
+        btn.setAttribute('aria-label', `Ver informações de ${data.titulo}`);
+        if (data.destaque) btn.style.gridColumn = 'span 2';
+        btn.innerHTML = `
+            <img src="${data.img}" alt="Treino de ${data.titulo}" loading="lazy" decoding="async">
+            <div class="mod-content"><h3>${data.titulo}</h3><span>↗</span></div>
+        `;
+        modGrid.appendChild(btn);
+    });
+
+    // Aplica o fallback se alguma imagem local não existir no servidor
+    modGrid.querySelectorAll('img').forEach(img => {
+        img.addEventListener('error', () => {
+            if (img.src !== FALLBACK_IMG) {
+                img.src = FALLBACK_IMG;
+                img.classList.add('img-fallback');
+            }
+        }, { once: true });
+    });
+
+    const plansList = document.getElementById('plans-list');
+    planos.forEach(plano => {
+        const row = document.createElement('div');
+        row.className = plano.destaque ? 'plan featured' : 'plan';
+        row.innerHTML = `
+            <div class="plan-name">${plano.nome}</div>
+            <div class="plan-price">${plano.preco}</div>
+            <div class="plan-note">${plano.nota}</div>
+            <a class="btn ${plano.destaque ? 'btn-primary' : 'btn-outline'} js-whatsapp" href="#" target="_blank" rel="noopener noreferrer" data-wa-msg="Olá! Tenho interesse no plano ${plano.nome} da DN Maromba.">Escolher</a>
+        `;
+        plansList.appendChild(row);
+        row.querySelector('.js-whatsapp').href = buildWhatsappUrl(row.querySelector('.js-whatsapp').dataset.waMsg);
+    });
+
+    /* ============================================================
+       HEADER / MENU MOBILE
+       ============================================================ */
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const header = document.getElementById('site-header');
+    const menuToggle = document.querySelector('.nav-menu-toggle');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    function syncHeader() { header.classList.toggle('scrolled', window.scrollY > 12); }
+    syncHeader();
+    window.addEventListener('scroll', syncHeader, { passive: true });
+
+    menuToggle.addEventListener('click', () => {
+        const open = menuToggle.classList.toggle('is-open');
+        mobileNav.classList.toggle('is-open', open);
+        document.body.classList.toggle('menu-open', open);
+        menuToggle.setAttribute('aria-expanded', String(open));
+        menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+    });
+
+    mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('is-open');
+            mobileNav.classList.remove('is-open');
+            document.body.classList.remove('menu-open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            menuToggle.setAttribute('aria-label', 'Abrir menu');
+        });
+    });
+
+    /* ============================================================
+       MODAL DE MODALIDADE
+       ============================================================ */
+    const overlay = document.getElementById('modal-overlay');
+    const closeButton = document.getElementById('modal-close');
+    const modalImage = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalTime = document.getElementById('modal-time');
+    const modalProf = document.getElementById('modal-prof');
+    const modalCta = document.getElementById('modal-cta');
+    let lastTrigger = null;
+
+    function openModal(key, trigger) {
+        const data = modalidades[key];
+        if (!data) return;
+        lastTrigger = trigger;
+        modalImage.src = data.img;
+        modalImage.alt = `Treino de ${data.titulo}`;
+        modalImage.classList.remove('img-fallback');
+        modalTitle.textContent = data.titulo;
+        modalDesc.textContent = data.desc;
+        modalTime.textContent = data.hora;
+        modalProf.textContent = data.prof;
+        modalCta.href = buildWhatsappUrl(`Olá! Tenho interesse na modalidade ${data.titulo} da DN Maromba.`);
+        overlay.classList.add('is-active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+        closeButton.focus();
+    }
+
+    function closeModal() {
+        overlay.classList.remove('is-active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
+        if (lastTrigger) lastTrigger.focus();
+    }
+
+    modGrid.addEventListener('click', event => {
+        const button = event.target.closest('.mod-card');
+        if (button) openModal(button.dataset.mod, button);
+    });
+    modalImage.addEventListener('error', () => {
+        if (modalImage.src !== FALLBACK_IMG) {
+            modalImage.src = FALLBACK_IMG;
+            modalImage.classList.add('img-fallback');
+        }
+    });
+    closeButton.addEventListener('click', closeModal);
+    overlay.addEventListener('click', event => { if (event.target === overlay) closeModal(); });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && overlay.classList.contains('is-active')) closeModal();
+    });
+
+    /* ============================================================
+       HERO — entrada e parallax discreto (respeita reduced motion)
+       ============================================================ */
+    if (typeof gsap !== 'undefined' && !prefersReducedMotion) {
+        gsap.timeline({ defaults: { ease: 'power2.out' } })
+            .to('#hero-image', { opacity: 1, duration: .8 })
+            .to('.hero-enter', { opacity: 1, y: 0, duration: .55, stagger: .08 }, '-=.25');
+
+        const heroImage = document.getElementById('hero-image');
+        window.addEventListener('scroll', () => {
+            const y = Math.min(window.scrollY * 0.08, 40);
+            heroImage.style.transform = `scale(1.04) translate3d(0, ${y}px, 0)`;
+        }, { passive: true });
+    } else {
+        document.querySelectorAll('.hero-enter').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+        document.getElementById('hero-image').style.opacity = '1';
+    }
+</script>
+</body>
+</html>
